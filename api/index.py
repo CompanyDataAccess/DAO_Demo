@@ -29,4 +29,8 @@ async def redact_pdf(file: UploadFile = File(...), search_strings: str = Form(..
     doc.save(out_buffer)
     
     # 5. Return the binary PDF file directly
-    return Response(content=out_buffer.getvalue(), media_type="application/pdf")
+    return Response(
+        content=out_buffer.getvalue(), 
+        media_type="application/pdf",
+        headers={"Content-Disposition": 'attachment; filename="redacted.pdf"'}
+    )
