@@ -42,6 +42,15 @@ async def redact_pdf(file: UploadFile = File(...), boxes_json: str = Form(...)):
             x1 = (xmax / 1000.0) * width
             y1 = (ymax / 1000.0) * height
             
+            # Add 15% padding to fix Gemini inaccuracies!
+            pad_x = (x1 - x0) * 0.15
+            pad_y = (y1 - y0) * 0.15
+            
+            x0 = max(0, x0 - pad_x)
+            y0 = max(0, y0 - pad_y)
+            x1 = min(width, x1 + pad_x)
+            y1 = min(height, y1 + pad_y)
+            
             # Create a rectangle and draw it
             rect = fitz.Rect(x0, y0, x1, y1)
             page.add_redact_annot(rect, fill=(0, 0, 0))
