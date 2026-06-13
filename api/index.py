@@ -54,9 +54,12 @@ async def redact_pdf(file: UploadFile = File(...), boxes_json: str = Form(...)):
     out_buffer = io.BytesIO()
     doc.save(out_buffer)
     
+    # Capture original filename from the incoming request
+    original_name = file.filename if file.filename else "redacted.pdf"
+    
     # 5. Return the binary PDF file directly
     return Response(
         content=out_buffer.getvalue(), 
         media_type="application/pdf",
-        headers={"Content-Disposition": 'attachment; filename="redacted.pdf"'}
+        headers={"Content-Disposition": f'attachment; filename="{original_name}"'}
     )
