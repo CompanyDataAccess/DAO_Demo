@@ -19,8 +19,8 @@ async def redact_pdf(
     # 2. Try Exact Text Redaction (Perfect Accuracy for normal PDFs)
     text_found = False
     if search_strings:
-        # Split by comma and clean up whitespace
-        strings = [s.strip() for s in search_strings.split(",") if s.strip()]
+        # Split by ||| and clean up whitespace to prevent address splitting bugs
+        strings = [s.strip() for s in search_strings.split("|||") if s.strip()]
         for page in doc:
             for text in strings:
                 # search_for gives pixel-perfect coordinates automatically
@@ -66,7 +66,7 @@ async def redact_pdf(
     out_buffer = io.BytesIO()
     doc.save(out_buffer)
     
-    original_name = file.filename if file.filename else "redacted.pdf"
+    original_name = f"Redacted_{file.filename}" if file.filename else "Redacted_document.pdf"
     
     return Response(
         content=out_buffer.getvalue(), 
